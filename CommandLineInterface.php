@@ -1,4 +1,5 @@
 <?php
+namespace deswerve\gist59d0ed15;
 
 /**
  * Can parse command line invocations like given in the following example and returns an stdClass descriptor for them.
