@@ -1,6 +1,8 @@
 <?php
 namespace deswerve\colin;
 
+use RuntimeException;
+
 /**
  * Can parse command line invocations like given in the following example and returns an stdClass descriptor for them.
  *
