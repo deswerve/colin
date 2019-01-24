@@ -46,7 +46,7 @@ class CommandLineInterface
         $mandatory = $this->formatOptionReference(false);
         $optional = $this->formatOptionReference(true);
         return sprintf(
-            '%s%s%s',
+            '%s%s%s%s',
             $result,
             $mandatory ? sprintf('%sOptions (required):%s  %s', PHP_EOL, PHP_EOL, implode(PHP_EOL . '  ', $mandatory)) : '',
             $optional ? sprintf('%sOptions (optional):%s  %s', PHP_EOL, PHP_EOL, implode(PHP_EOL . '  ', $optional)) : '',
