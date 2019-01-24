@@ -43,11 +43,13 @@ class CommandLineInterface
         foreach ($this->usageLines as $line) {
             $result .= sprintf('  %s %s%s', $this->applicationName, $line, PHP_EOL);
         }
-        $options = $this->formatOptionReference();
+        $mandatory = $this->formatOptionReference(false);
+        $optional = $this->formatOptionReference(true);
         return sprintf(
             '%s%s%s',
             $result,
-            $options ? sprintf('%sOptions:%s  %s', PHP_EOL, PHP_EOL, implode(PHP_EOL . '  ', $options)) : '',
+            $mandatory ? sprintf('%sOptions (required):%s  %s', PHP_EOL, PHP_EOL, implode(PHP_EOL . '  ', $mandatory)) : '',
+            $optional ? sprintf('%sOptions (optional):%s  %s', PHP_EOL, PHP_EOL, implode(PHP_EOL . '  ', $optional)) : '',
             PHP_EOL
         );
     }
@@ -89,19 +91,24 @@ class CommandLineInterface
     }
 
     /**
+     * @param bool|null $havingOptional When true this method will pick only optional options, for false only mandatory
+     * ones and for null or when omitted all options are used.
+     *
      * @return string[] An array of strings, each describing one option with its switches, params and description.
      */
-    public function formatOptionReference()
+    public function formatOptionReference(?bool $havingOptional = null)
     {
         $result = [];
         $lines = [];
         $firstColumn = 0;
         foreach ($this->options as $option) {
             list($name, $description, $params, $char, $isOptional, $defaultValues) = $option;
-            $shortName = is_null($char) || $char === '' ? '  ' : '-' . $char;
-            $first = sprintf('%s  --%s%s', $shortName, $name, $params ? ' ' . implode(' ', $params) : '');
-            $firstColumn = max($firstColumn, strlen($first));
-            $lines[] = [$first, $description];
+            if ($isOptional === $havingOptional || $havingOptional === null) {
+                $shortName = is_null($char) || $char === '' ? '  ' : '-' . $char;
+                $first = sprintf('%s  --%s%s', $shortName, $name, $params ? ' ' . implode(' ', $params) : '');
+                $firstColumn = max($firstColumn, strlen($first));
+                $lines[] = [$first, $description];
+            }
         }
         foreach ($lines as $line) {
             $result[] = sprintf('%-' . $firstColumn . 's  %s', $line[0], $line[1]);
